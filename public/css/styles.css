@@ -1,0 +1,40 @@
+body {
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+.info-card {
+    margin: 3%;
+}
+
+#map {
+    height: 30%;
+    width: 70%;
+    margin: auto;
+}
+
+text{
+    font-family:Helvetica, Arial, sans-serif;
+    font-size:11px;
+    pointer-events:none;
+}
+#chart{
+    width:500px;
+    height:500px;
+}
+#question{
+    display: block;
+    width:400px;
+    height:500px;
+    clear: both;
+    /* top:0;
+    left:520px; */
+}
+#question h1{
+    font-size: 50px;
+    font-weight: bold;
+    clear: both;
+    position: relative;
+    bottom:0;
+    -webkit-transform:translate(0,-50%);
+            transform:translate(0,-50%);
+}

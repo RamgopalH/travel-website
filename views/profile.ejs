@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= userName %></title>
+    <%- include('partials/bootstrap'); %> 
+</head>
+<body>
+<%
+    function date(iso) {
+        d = new Date(iso);
+        return d.toLocaleDateString('en-GB', {day:'numeric', month:'short', year:'numeric'});
+    }
+%>
+
+<%- include('partials/navbar')%>
+
+<main class="flex-shrink-0">
+
+    <h1>User: <%= user.username %></h1>
+    <h4>Id: </h4><%= user._id %>
+    <h4>Mobile: </h4><%= user.mobile %>
+    <h4>Email: </h4><%= user.email %>
+    <h2>Transaction History: </h2>
+    <% for (let package of boughtPackages) {%>
+        <div class="card">
+            <h4>Transaction Id: </h4><%= package._id %>
+            <h4>Cost: </h4><%= package.cost %>
+            <h4>Destination: </h4><%= package.destination %>
+            <h4>From: </h4><%= date(package.from) %>
+            <h4>To: </h4><%= date(package.to) %>
+        </div>
+    <%}%>
+</main>
+</body>
+
+</html>

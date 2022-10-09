@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= destination.name %></title>
+    <%- include('partials/bootstrap'); %>
+</head>
+<body>
+    <%- include('partials/navbar'); %>
+    <%
+        function date(iso) {
+            d = new Date(iso);
+            return d.toLocaleDateString('en-GB', {day:'numeric', month:'short', year:'numeric'});
+        }
+    %>
+    <h1><%= destination.name %></h1>
+    <br>
+    <h3>Description:</h3>
+    <p><%= destination.description %> </p>
+    <div class="container text-center px-4">
+        <div class="row gx-5 gy-8">
+            <h3 class="col-12">Packages Available</h3>
+            <% packages.forEach((package)=> { %>
+                <div class="info-card bg-light p-3 col-12">
+                    <div class="card-head">
+                        <h4><%= package.level %></h4>
+                    </div>
+                    <div class="card-body">
+                        <h5>From: <%= date(package.from) %></h5> 
+                       <h5>To: <%= date(package.to) %></h5> 
+                       <h5>Type: <%= package.level %></h5> 
+                       <h5>Cost[Per Person]: <%= package.cost %></h5> 
+                       <h5>Discount: <%= package.discount * 100 %>%</h5> 
+                    </div>
+                    <div class="card-foot">
+                        <form action="/buy" method="post">
+                            <button class="btn btn-outline-dark my-3" name="packageId" value="<%= package._id %>">Buy</button>
+                            <input type="hidden" name="userId" value="<%= userId %>">
+                            <input type="hidden" name="cost" value="<%= package.cost %>">
+                        </form>
+                    </div>
+                </div>
+            <% }) %>    
+
+        </div>
+    </div>
+</body>
+</html>

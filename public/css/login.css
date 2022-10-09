@@ -1,0 +1,99 @@
+body {
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-size: 1.5rem;
+    background-color: #000;
+    color: whitesmoke;
+    text-align: center;
+}
+
+.main-container {
+    margin: 100px auto 200px auto;
+    width: 30%;
+    border: 2px blue solid;
+    border-radius: 3%;
+    padding-bottom: 1%;
+}
+
+.col-6 {
+    width:40%;
+    display: inline-block;
+    padding: 20px 0px;
+}
+
+.form-element {
+    margin:20px;
+    text-align: center;
+    height: fit-content;
+
+}
+
+input {
+    height: 30px; 
+    width: 100%;
+    margin: 0 auto;
+    padding: 0;
+    border: 0;
+    text-align: center;
+}
+
+input#captcha {
+    width: 75%;
+}
+
+label.username {
+    height: 30px;
+    margin-top: 5px;
+    padding: 5px;
+    position: relative;
+    top: 4px;
+}
+
+#captcha-box {
+    margin: auto;
+    display: inline-block;
+    background-color: black;
+    border: white 2px solid;
+    border-radius: 3%;
+    padding:20px;
+    width: 75%;
+    display: block;
+    margin: auto 0;
+    font-size: 3rem;
+    font-weight: bold;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+#reload {
+    display: inline-block;
+    height: 30px;
+    width: 30px;
+    margin: 10px;
+}
+
+.flex {
+    display: flex;
+    margin: 10px auto;
+    align-items: center;
+}
+
+.btn {
+    padding: 6px;
+    height: 100%;
+    margin: 2px;
+}
+
+.hidden {
+    display: none;
+}
+
+input:invalid, .red{
+    background-color: red;
+    color: whitesmoke;
+}
+
+a {
+    color: white;
+    text-decoration: none;
+    font-size: 1rem;
+    padding-bottom: 10px;
+}

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="./css/login.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+</head>
+<body>
+    <div class="main-container">
+        <h1>Login</h1>
+        <hr>
+        <form id="loginForm" action="/login" method="post" autocomplete="off">
+            <div class="form-element col-6">
+                <label class="username">Username</label>
+            </div>
+            <div class="form-element col-6">
+                <input name="username" type="text" id="username" placeholder="Username" autofocus><br>
+            </div>
+            <div class="form-element col-6">
+                <label class="username">Password</label>
+            </div>
+            <div class="form-element col-6">
+                <input name="password" type="password" id="pwd" placeholder="Password" autofocus><br>
+            </div>
+            <!-- <div class="form-element">
+               <div class="flex"> <label id="captcha-box">Captcha</label><button type="button" id="reload"><i class="fa-solid fa-arrows-rotate"></i></button></div>
+            <input type="text" id="captcha" placeholder="Enter Above Captcha">
+            </div> -->
+            <div class="form-element">
+                <button type="submit" class="btn">Submit</button>
+            </div>
+        </form>
+        <a href="signup.html">Sign Up</a>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="./js/index.js"></script>
+</body>
+</html>

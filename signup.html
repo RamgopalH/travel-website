@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <link rel="stylesheet" href="./css/login.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+</head>
+
+<body>
+    <div class="main-container">
+        <h1>Sign Up</h1>
+        <hr>
+        <form id="signupForm" action="./enterOtp" method="post" autocomplete="off">
+            <div class="form-element col-6">
+                <label class="username" for="username">Username</label>
+            </div>
+            <div class="form-element col-6">
+                <input name="username" type="text" id="username" placeholder="Username" autofocus><br>
+            </div>
+            <div class="form-element col-6">
+                <label class="username" for="pwd">Password</label>
+            </div>
+            <div class="form-element col-6">
+                <input name="password" type="text" id="pwd" placeholder="Password" autofocus>
+                <!-- pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"  -->
+                <br>
+            </div>
+            <div class="form-element col-6">
+                <label class="username" for="cpwd">Mobile Number</label>
+            </div>
+            <div class="form-element col-6">
+                <input name="mobile" type="text" id="mob" placeholder="Mobile Number" pattern="^[0-9]{10}$" autofocus><br>
+            </div>
+            <div class="form-element col-6">
+                <label class="username" for="pin">Country</label>
+            </div>
+            <div class="form-element col-6">
+                <!-- <input name="pin" type="text" id="pin" placeholder="PIN" autofocus><br> -->
+                <select name="code" id="country">
+                    <option value="91">India</option>
+                </select>
+            </div>
+            <div class="form-element col-6">
+                <label class="username" for="email">Email</label>
+            </div>
+            <div class="form-element col-6">
+                <input name="email" type="email" id="email" placeholder="Email" autofocus><br>
+            </div>
+            <div class="form-element">
+                <button type="submit" class="btn" id="validateBtn">Submit</button>
+            </div>
+        </form>
+        <a href="/">Login</a>
+        <script>
+            // document.querySelector("#validateBtn").addEventListener("click", () => {
+            //     let pwd = document.querySelector("#pwd").value;
+            //     let conf = document.querySelector("#cpwd").value;
+            //     console.log(pwd, conf);
+            //     if (pwd && pwd == conf) {
+            //         document.querySelector("#signupForm").submit();
+            //     } else {
+
+            //     }
+            // });
+        </script>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</body>
+
+</html>
