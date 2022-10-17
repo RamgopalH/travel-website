@@ -7,6 +7,33 @@
     <title>Document</title>
     <%- include('partials/bootstrap'); %> 
     <link rel="stylesheet" type="text/css" href="./css/styles.css">
+    <script>
+        function date(iso) {
+            d = new Date(iso);
+            return d.toLocaleDateString('en-GB', {day:'numeric', month:'short', year:'numeric'});
+        }
+        let Data = [];
+        Data = <%-packages%>;
+        let a = 0;
+        let data=[];
+        Data.forEach((package)=> {
+            let card = `<div class="info-card bg-light p-3 col-12"><div class="card-head"><h4> ${package.destination} </h4></div><div class="card-body"><h5>From: ${date(package.from)}</h5><h5>To: ${date(package.to)}</h5><h5>Type: ${package.level}</h5><h5>Cost[Per Person]: ${package.cost*0.5}</h5></div><div class="card-foot"><form action="/buy" method="post"><button class="btn btn-outline-dark my-3" name="packageId" value="${package._id}">Buy</button><input type="hidden" name="userId" value="<%- userId %>"><input type="hidden" name="cost" value="${package.cost*0.5}"></form></div></div>`;
+            a++;
+            if(Math.random() > 0.4) {
+                data.push({
+                    label: package.destination,
+                    card: card,
+                    value: a
+                });
+            } else {
+                data.push({
+                    label: "Try Again",
+                    card: "<h2>Better Luck Tomorrow<h2>",
+                    value: a
+                });
+            }
+        });
+    </script>
 </head>
 <body>
     <%- include('partials/navbar'); %>

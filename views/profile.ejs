@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= userName %></title>
+    
     <%- include('partials/bootstrap'); %> 
 </head>
 <body>
@@ -21,17 +22,18 @@
 <main class="flex-shrink-0">
 
     <h1>User: <%= user.username %></h1>
-    <h4>Id: </h4><%= user._id %>
-    <h4>Mobile: </h4><%= user.mobile %>
-    <h4>Email: </h4><%= user.email %>
+    <h5>Id: <%= user._id %></h5>
+    <h5>Mobile: <%= user.mobile %></h5>
+    <h5>Email: <%= user.email %></h5>
     <h2>Transaction History: </h2>
     <% for (let package of boughtPackages) {%>
-        <div class="card">
-            <h4>Transaction Id: </h4><%= package._id %>
-            <h4>Cost: </h4><%= package.cost %>
-            <h4>Destination: </h4><%= package.destination %>
-            <h4>From: </h4><%= date(package.from) %>
-            <h4>To: </h4><%= date(package.to) %>
+        <div class="info-card">
+            <h5>Transaction Id: <%= package.transactionId %></h5>
+            <h5>Package Id: <%= package._id %> </h5>
+            <h5>Cost: <%= package.cost %></h5>
+            <h5>Destination: <%= package.destination %></h5>
+            <h5>From: <%= date(package.from) %></h5>
+            <h5>To: <%= date(package.to) %></p>
         </div>
     <%}%>
 </main>

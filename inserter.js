@@ -27,6 +27,23 @@ app.post('/destination', (req, res)=> {
     });
 });
 
+app.post('/package', (req, res)=> {
+    const package = new Destination( {
+        name: req.body.name,
+        level: req.body.level,
+        destination: req.body.destination,
+        from: req.body.from,
+        to: req.body.to,
+        cost: req.body.cost,
+        discount: req.body.discount
+    });
+    package.save().then((err)=>{
+        if(err) console.log(err);
+        else console.log('Package saved');
+        res.redirect('/');
+    });
+});
+
 app.listen(5000, ()=> {
     console.log('Inserter Active');
 });

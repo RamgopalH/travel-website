@@ -172,7 +172,10 @@ app.post('/buy', (req, res) => {
                 }
                 User.findOneAndUpdate({_id: tran.userId}, {$push:{ packages:pkg}}, (err, doc)=> {
                     if (err) console.log(err);
-                    else console.log(doc);
+                    else {
+                        res.redirect('/index/' + tran.userId);
+                        console.log(doc);
+                    }
                 });
             }
         })
@@ -180,7 +183,15 @@ app.post('/buy', (req, res) => {
 });
 
 app.get('/random', (req, res)=> {
-    res.render('random', {userId: req.query.userId});
+    User.find({_id: req.query.userId}, (err, user)=> {
+        Package.find({}, (err, packages)=> {
+            if(err) console.log(err);
+            else  {
+                packages = JSON.stringify(packages);
+                res.render('random', {userId: req.query.userId, packages: packages});
+            }
+        });
+    });
 });
 
 app.get('/search', (req, res)=> {
@@ -188,6 +199,7 @@ app.get('/search', (req, res)=> {
     Package.find({destination: req.query.destination}, (err, packages)=> {
         if(err) console.log(err)
         else {
+            packages = packages.toJSON();
             console.log(packages);
             res.render('search', {level: "Available", packages: packages, userId: req.query.userId});
         }

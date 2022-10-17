@@ -50,6 +50,7 @@ UserSchema.statics.getPackages = function (userId) {
             for (let package of user.packages) {
                 packageIds.push(package.packageId);
             }
+            console.log(packageIds);
             search = new Promise((resolve, reject) => {
                 Package.find({ _id: { $in: packageIds } }).then((packages) => {
                     resolve(packages);
@@ -58,9 +59,8 @@ UserSchema.statics.getPackages = function (userId) {
             search.then((packages) => {
                 for(let i=0;i<packages.length;i+=1) {
                     packages[i].transactionId = user.packages[i].transactionId;
-                    console.log(packages[i].transactionId);
-                    console.log(packages[i]);
                 }
+                console.log(packages);
                 res(packages);
             });
         });
