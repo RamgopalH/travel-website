@@ -2,6 +2,7 @@ const bodyParser = require('body-parser');
 const express = require('express');
 const Destination  = require('./public/js/db/models/destination.model');
 const mongoose = require('mongoose');
+const { Package } = require('./public/js/db/models/package.model');
 
 mongoose.connect('mongodb://localhost:27017/Travel');
 
@@ -28,7 +29,7 @@ app.post('/destination', (req, res)=> {
 });
 
 app.post('/package', (req, res)=> {
-    const package = new Destination( {
+    const package = new Package( {
         name: req.body.name,
         level: req.body.level,
         destination: req.body.destination,

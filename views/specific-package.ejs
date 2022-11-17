@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= package.destination %> <%= package.level %> Package</title>
+    <%- include('partials/bootstrap') %> 
+</head>
+    <% 
+        packageJSON = JSON.stringify(package);
+        package = package.toObject(); 
+    %>
+        <script>
+            const package = <%- packageJSON %>;
+            console.log(package.hotel)
+            function calcCost() {
+                console.log("changed");
+                const cost = <%- cost %>;
+                const noOfPeople = document.form1.people.value;
+                const from =  new Date(document.form1.from.value);
+                const to =  new Date(document.form1.to.value);
+                let bill = document.form1.bill;
+                console.log(from);
+                console.log(to);
+                console.log(noOfPeople)
+                let days = Math.abs(to.getTime() - from.getTime() )/ (24*60*60*1000);
+                console.log(days)
+                let total = cost*noOfPeople + 5000*days;
+                document.form1.cost.value = total;
+                if(total) bill.value = `₹${total}`;
+            }   
+            function validate() {
+                from = Date(document.form1.from.value).getTime();
+                to = Date(document.form1.to.value).getTime();
+                // const b1 = Date(package.from).getTime();
+                // const b2 = Date(package.to).getTime();
+                if(document.form1.cost.value==NAN) return false;
+                if(from>to) return false;
+                if(from<Date.now()) return false;
+                if(to<Date.now()) return false;
+                return true;
+            }
+        </script>
+<body>
+    <%- include('partials/navbar') %>
+    <h1><%= package.destination %></h1>
+        <h3><%= package.level %></h3>
+        <table class="container table">
+            <tr>
+                <td class="w-75">
+                    <div class="main-content">
+                        <img src="" alt="">
+                        <% console.log(package.places) %>
+                        <p><%= package.description %></p>
+                        <h3 class="hotelName">Hotel: <%= package.hotel %></h3>
+                        <img class="hotel-img" src="../images/<%= package.hotelImage %>" alt="">
+                        <br><br> 
+                        <table class="table table-striped table-primary">
+                            <% var i=0; %>
+                            <% package.places.forEach((place)=> { %>
+                              <%  if(i%2==0) { %>
+                                    <tr>
+                                        <td>
+                                            <img class="place-img" src="../images/<%= place.image %> " alt="">
+                                        </td>
+                                        <td>
+                                            <b><%= place.name %></b>
+                                        <br>
+                                            <%= place.description %> 
+                                        </td>
+                                        
+                                    </tr>
+                            <%  } else { %>
+                                    <tr>
+                                    <td>
+                                        <b><%= place.name %></b>
+                                    <br>
+                                        <%= place.description %> 
+                                    </td>
+                                    <td>
+                                        <img class="place-img" src="../images/<%= place.image %> " alt="">
+                                    </td>
+                                </tr>
+                             <%   } i++; %>
+                                
+                            <% }); %>
+                        </table>
+                    </div>
+                </td>
+                <td class="w-25 px-3">
+
+                    <div class="form-class row">
+                        <form action="/payment" method="get" name="form1">
+                            <div class="row my-2">
+                                <label class="col-4 w-50">From:</label><input class="form-control col-4 w-50" type="date" name="from" onchange="calcCost();" value="<%= from %>">
+                            </div>
+                            <div class="row my-2">
+                                <label class="col">To: </label><input class="form-control col" onchange="calcCost();" type="date" name="to" value="<%= to %>">
+                            </div>
+                            <div class="row my-2">
+                                <label class="col">Number of People:</label><input type="number" class="form-control col" onchange="calcCost();" name="people" class="people">
+                            </div>
+                            <label class="col-4">Total</label><input class="my-4" type="text" name="bill" id="bill" readonly>
+                            <input type="hidden" name="cost">
+                            <input type="hidden" name="userId" value="<%= userId %>">
+                            <input type="hidden" name="packageId" value="<%= package._id%>">
+                            <input type="submit" value="Submit" class="form-control col-4 btn btn-dark" name="submit" onsubmit="return validate();">
+                        </form>
+                    </div>
+                </td>
+            </tr>
+        </table>
+        <script>
+            console.log(document.form1.from.value);
+        </script>
+</body>
+</html>

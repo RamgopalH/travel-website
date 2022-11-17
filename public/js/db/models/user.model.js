@@ -1,6 +1,7 @@
 const { ObjectId } = require('bson');
 const Package = require('./package.model').Package;
 const mongoose = require('mongoose');
+const Transaction = require('./transaction.model');
 
 const UserSchema = new mongoose.Schema({
     username: {
@@ -46,22 +47,18 @@ UserSchema.statics.getPackages = function (userId) {
                 console.log('User Not found');
                 rej('user Not Found');
             }
-            let packageIds = [];
+            let transactionIds = [];
             for (let package of user.packages) {
-                packageIds.push(package.packageId);
+                transactionIds.push(package.transactionId);
             }
-            console.log(packageIds);
+            console.log(transactionIds);
             search = new Promise((resolve, reject) => {
-                Package.find({ _id: { $in: packageIds } }).then((packages) => {
-                    resolve(packages);
+                Transaction.find({ _id: { $in: transactionIds } }).then((transactions) => {
+                    resolve(transactions);
                 });
             });
-            search.then((packages) => {
-                for(let i=0;i<packages.length;i+=1) {
-                    packages[i].transactionId = user.packages[i].transactionId;
-                }
-                console.log(packages);
-                res(packages);
+            search.then((transactions) => {
+                res(transactions);
             });
         });
     });

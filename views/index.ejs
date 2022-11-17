@@ -7,12 +7,77 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Travellers Quest</title>
     <%- include('partials/bootstrap'); %>
-    <link rel="stylesheet" href="css/styles.css">
+        <link rel="stylesheet" href="../css/styles.css">
+        <script type="module">
+            // Initialize and add the map
+            const destinations = <%-destJSON%>;
+            function initMap() {
+                // The location of Uluru
+                const uluru = {
+                    lat: 0,
+                    lng: 0
+                }
+                // The map, centered at Uluru
+                const map = new google.maps.Map(document.getElementById("map"), {
+                    zoom: 2,
+                    center: uluru,
+                });
+                let markers = [];
+                let infoWindows = [];
+                let positions = [];
+                let i=0;
+                destinations.forEach((destination)=> {
+                    if(destination.lat) {
+                        positions.push({
+                            lat: destination.lat,
+                            lng: destination.lng
+                        });
+                        markers.push(new google.maps.Marker({
+                            position: positions[i],
+                            map: map,
+                            id: i
+                        }));
+                        let box = `<div class="info-card m-auto " style="width: 18rem;"><img src="../images/${destination.image}" class="card-img-top" alt="..." width="275px" height="183px"><div class="card-body"><h5 class="card-title">${destination.name}</h5><p class="card-text">${destination.description.substring(0,150)}...</p><form action="/destination/${destination.name}" method="post"><input type="hidden" name="userId" value="<%= userId %>"><button class="btn btn-outline-dark" name="destinationName" value="${destination.name}">Go</button></form></div></div>`;
+                        infoWindows.push(new google.maps.InfoWindow({
+                             content: box,
+                             active: false
+                        }));
+                        
+                        i++;
+                    }
+                });
+                for(let i=0;i<markers.length;i++) {
+                    markers[i].addListener('click', ()=> {
+                            console.log(infoWindows[i]);
+                            if(infoWindows[i].active) {
+                                infoWindows[i].active=false;
+                                infoWindows[i].close()
+                                return;
+                            } else {
+                                
+                                for(let j=0;j<markers.length;j++) {
+                                    if(infoWindows[j].active) {
+                                        infoWindows[j].active=false;
+                                        infoWindows[j].close();
+                                    }
+                                }
+                                    infoWindows[i].active=true;
+                                    infoWindows[i].open({
+                                        anchor: markers[i],
+                                        map: map
+                                    });
+                            }
+                        });
+                }
+            }
+
+            window.initMap = initMap;
+        </script>
 </head>
 
 <body>
     <%- include('partials/navbar'); %>
-        <div class="px-4 pt-5 my-5 text-center border-bottom">
+        <div class="hero color-black px-4 pt-5 text-center border-bottom">
             <h1 class="display-4 fw-bold">The Journey is the Destination</h1>
             <div class="col-lg-6 mx-auto">
                 <p class="lead mb-4">Where would you like to go?</p>
@@ -24,35 +89,33 @@
                                 <input class="form-control" type="search" placeholder="Search" name="destination">
                             </div>
                             <div class="col-3">
-                                <input class="form-control col-4" type="date" name="from">
+                                <input class="form-control" type="date" name="from">
                             </div>
                             <div class="col-3">
-                                <input class="form-control col-4" type="date" name="to">
+                                <input class="form-control" type="date" name="to">
                             </div>
                         </div>
-                        <div class="col">
-                            <input class="form-control" type="submit">
+                        <div class="col-12 my-4">
+                            <input class="btn btn-outline-dark form-control" type="submit">
                         </div>
-                      </form>
-                <!-- <button type="button" class="btn btn-primary btn-lg px-4 me-sm-3">Primary button</button>
-                <button type="button" class="btn btn-outline-secondary btn-lg px-4">Secondary</button> -->
-            </div>
+                    </form>
+                </div>
             </div>
         </div>
-        <div class="container text-center px-4">
-            <div class="row gx-5 gy-5">
+        <div class="main container text-center">
+            <div class="row pop-dest m-auto gx-5 gy-5">
                 <h3 class="p-3 col-12">Most Popular Destinations</h3>
                 <% topDestinations.forEach((destination)=> { %>
-                    <div class="info-card bg-light p-3 col-3">
-                        <div class="card-head">
-                            <h4>
-                                <%= destination.name %>
-                            </h4>
-                        </div>
+                    <div class="info-card col-4 m-auto my-4" style="width: 18rem;">
+                        <img src="../images/<%= destination.image %>" class="card-img-top" alt="..." width="275px"
+                            height="183px">
                         <div class="card-body">
-                            <%= destination.description %>
-                        </div>
-                        <div class="card-foot">
+                            <h5 class="card-title">
+                                <%= destination.name %>
+                            </h5>
+                            <p class="card-text">
+                                <%= destination.description.substring(0,150); %>...
+                            </p>
                             <form action="/destination/<%= destination.name %>" method="post">
                                 <input type="hidden" name="userId" value="<%= userId %>">
                                 <button class="btn btn-outline-dark my-3" name="destinationName"
@@ -62,55 +125,33 @@
                     </div>
                     <% }) %>
             </div>
-            <div class="container text-center px-4">
-                <div class="row gx-5 gy-5">
-                    <h3 class="p-3 col-12">All Destinations</h3>
-                    <% destinations.forEach((destination)=> { %>
-                        <div class="info-card bg-light p-3 col-3">
-                            <div class="card-head">
-                                <h4>
-                                    <%= destination.name %>
-                                </h4>
-                            </div>
-                            <div class="card-body">
-                                <%= destination.description %>
-                            </div>
-                            <div class="card-foot">
-                                <form action="/destination/<%= destination.name %>" method="post">
-                                    <input type="hidden" name="userId" value="<%= userId %>">
-                                    <button class="btn btn-outline-dark my-3" name="destinationName"
-                                        value="<%= destination.name %>">Go</button>
-                                </form>
-                            </div>
+            <div class="row m-auto all-dest gx-5 gy-5">
+                <h3 class="p-3 col-12">All Destinations</h3>
+                <% destinations.forEach((destination)=> { %>
+                    <div class="info-card col-3 m-auto my-3" style="width: 18rem;">
+                        <img src="../images/<%= destination.image %>" class="card-img-top" alt="..." width="275px"
+                            height="183px">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <%= destination.name %>
+                            </h5>
+                            <p class="card-text">
+                                <%= destination.description.substring(0,150); %>...
+                            </p>
+                            <form action="/destination/<%= destination.name %>" method="post">
+                                <input type="hidden" name="userId" value="<%= userId %>">
+                                <button class="btn btn-outline-dark my-3" name="destinationName"
+                                    value="<%= destination.name %>">Go</button>
+                            </form>
                         </div>
-                        <% }) %>
-                </div>
-        </div>
-        <div id="map">
-        </div>
-        <script
-            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAA_A9qHIwbSXo8RLMpg3s7kXL664nmEfc&callback=initMap&v=weekly"
-            defer>
-        </script>
-        <script>
-            function initMap() {
-
-                // The location of Geeksforgeeks office
-                const gfg_office = {
-                    lat: 28.50231,
-                    lng: 77.40548
-                };
-
-                // Create the map, centered at gfg_office
-                const map = new google.maps.Map(
-                    document.getElementById("map"), {
-
-                    // Set the zoom of the map
-                    zoom: 17.56,
-                    center: gfg_office,
-                });
-            }
-        </script>
+                    </div>
+                    <% }) %>
+            </div>
+            <div id="map"></div>
+            <script
+                src="https://maps.googleapis.com/maps/api/js?key=<%-key %>&callback=initMap&v=weekly"
+                defer>
+            </script>
 </body>
 
 </html>

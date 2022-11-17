@@ -3,14 +3,15 @@ const bodyParser = require('body-parser');
 const app = express();
 const nodemailer = require('nodemailer');
 const mongoose = require('mongoose');
+require('dotenv').config()
 
 const { User, Package, Transaction, Destination } = require('./public/js/db/models/index.model');
 
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-        user: 'youremail@gmail.com',
-        pass: 'yourpassword'
+        user: 'rg2792002@gmail.com',
+        pass: 'nehpupmxpbnierpl'
     }
 });
 
@@ -18,9 +19,10 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
 
-
 var userTemp;
 var otp;
+
+/** MONGOOSE CONNECTION */
 
 mongoose.connect('mongodb://localhost:27017/Travel');
 
@@ -31,29 +33,7 @@ app.get('/', (req, res) => {
     res.sendFile(__dirname + '/login.html');
 });
 
-app.get('/signup.html', (req, res) => {
-    res.sendFile(__dirname + '/signup.html');
-});
-
-app.get('/index/:userId', (req, res) => {
-    let userId = req.params.userId;
-    Destination.find({}, { name: 1, description: 1 }).sort({ popularity: -1 }).exec((err, destinations) => {
-        if (err) console.log(err)
-        else {
-            res.render('index', { userId: userId, topDestinations: destinations.slice(0, 3), destinations: destinations });
-        }
-    });
-});
-
-app.get('/profile/:userId', (req, res) => {
-    User.getPackages(req.params.userId).then((packages) => {
-        User.findById(req.params.userId).then((user) => {
-            res.render('profile', {user:user, userId: req.params.userId, userName: user.username, boughtPackages: packages });
-        });
-    }, () => {
-        res.render('invalid', { error: 'User Id' });
-    });
-});
+/** LOGIN PAGE */
 
 app.post('/login', (req, res) => {
     let input = req.body.username;
@@ -75,7 +55,160 @@ app.post('/login', (req, res) => {
     });
 });
 
+/** SIGNUP PAGE */
+
+app.get('/signup.html', (req, res) => {
+    res.sendFile(__dirname + '/signup.html');
+});
+
+/** HOME PAGE */
+
+app.get('/index/:userId', (req, res) => {
+    let userId = req.params.userId;
+    Destination.find({}, { name: 1, description: 1, image: 1, lat: 1, lng: 1 }).sort({ popularity: -1 }).exec((err, destinations) => {
+        if (err) console.log(err)
+        else {
+            destJSON = JSON.stringify(destinations);
+            res.render('index', { userId: userId, topDestinations: destinations.slice(0, 3), destinations: destinations, destJSON: destJSON, key: process.env.API_KEY });
+        }
+    });
+});
+
+/** USER PROFILE PAGE */
+
+app.get('/profile/:userId', (req, res) => {
+    User.getPackages(req.params.userId).then((transactions) => {
+        User.findById(req.params.userId).then((user) => {
+            res.render('profile', { user: user, userId: req.params.userId, userName: user.username, transactions: transactions });
+        });
+    }, () => {
+        res.render('invalid', { error: 'User Id' });
+    });
+});
+
+
+/** DESTINATION PAGE */
+
+app.post('/destination/:destinationName', (req, res) => {
+    Destination.findOne({ name: req.params.destinationName }, (err, destination) => {
+        if (err) res.render('invalid', { error: 'Destination not found' });
+        else {
+            Package.find({ destination: destination.name }, (err, packages) => {
+                res.render('destination', { userId: req.body.userId, destination: destination, packages: packages });
+            });
+        }
+    })
+});
+
+/** PACKAGE PAGE */
+
+app.get('/package/:packageId', (req, res) => {
+    Package.findOne({ _id: req.query.packageId }, (err, package) => {
+        if (err) console.log(err);
+        console.log(package);
+        if(req.query.from) from = req.query.from;
+        else from = "";
+        if(req.query.to) to = req.query.to;
+        else to = "";
+        res.render('specific-package', { userId: req.query.userId, package: package, cost: req.query.cost, from: from, to: to});
+    });
+});
+
+/** SEARCH FOR PACKAGES */
+
+app.get('/packageSearch', (req, res) => {
+    const level = req.query.level;
+    Package.find({ level: level }, (err, packages) => {
+        res.render('search', { level: req.query.level, userId: req.query.userId, packages: packages, from:"", to:"" });
+    });
+});
+
+/** PAYMENT PAGE */
+
+app.get('/payment', (req, res) => {
+    Package.find({ _id: req.query.packageId }, (err, package) => {
+        if (err) console.log(err);
+        else {
+            const cost = req.query.cost;
+            console.log(package);
+            res.render('payment', { totalProducts: 0, tax: 0.18 * cost, totalPrice: cost * 1.18, cost: req.query.cost, package: package, userId: req.query.userId, from: req.query.from, to: req.query.to });
+        }
+    });
+});
+
+/** SEARCH RESULTS PAGE */
+
+app.get('/search', (req, res) => {
+    Destination.find({}, (err, destinations)=> {
+        Package.find({ $or:[{destination: req.query.destination}, {level: req.query.destination }] }, (err, packages) => {
+            if (err) console.log(err)
+            else { 
+                if (packages.length == 0) {
+                    res.render('search', { destination: req.query.destination, level: "Not Available", packages: packages, userId: req.query.userId, from: req.query.from, to: req.query.to});
+                } else {
+                    res.render('search', {  destination: req.query.destination,level: "Available", packages: packages, userId: req.query.userId, from: req.query.from, to: req.query.to});
+                }
+            }
+        });
+    });
+    // res.redirect(`../index/${req.query.userId}`);
+});
+
+/** RANDOM PAGE */
+
+app.get('/random', (req, res) => {
+    Destination.find({}, (err, destinations)=>{
+        if(err) console.log(err);
+        User.find({ _id: req.query.userId }, (err, user) => {
+            Package.find({}, (err, packages) => {
+                if (err) console.log(err);
+                else {
+                    packages = JSON.stringify(packages);
+                    res.render('random', { userId: req.query.userId, packages: packages, destinations: destinations });
+                }
+            });
+        });
+    })
+});
+/** FINAL TRANSACTION CONFIRMED ROUTE */
+
+app.post('/buy', (req, res) => {
+    console.log(req.body);
+    Package.findOne({ _id: req.body.packageId }, (err, package) => {
+        if (!package) console.log("Package not found");
+        else {
+            package.from = req.body.from;
+            package.to = req.body.to;
+            const transaction = new Transaction({
+                userId: req.body.userId,
+                package: package,
+                cost: req.body.cost
+            });
+            transaction.save((err, tran) => {
+                if (err) console.log(err);
+                else {
+                    console.log(tran);
+                    const pkg = {
+                        packageId: package._id,
+                        transactionId: tran._id
+                    }
+                    User.findOneAndUpdate({ _id: tran.userId }, { $push: { packages: pkg } }, (err, doc) => {
+                        if (err) console.log(err);
+                        else {
+                            res.redirect('/index/' + tran.userId);
+                        }
+                    });
+                }
+            })
+        }
+    });
+});
+
+/** ADDING USER */
+
 app.post('/user', (req, res) => {
+    console.log(otp)
+    console.log(req.body.otp)
     if (req.body.otp == otp) {
         const user = new User({
             username: userTemp.username,
@@ -94,6 +227,8 @@ app.post('/user', (req, res) => {
 
 });
 
+/** OTP SENDING ROUTE */
+
 app.post('/enterOtp', (req, res) => {
     userTemp = {
         username: req.body.username,
@@ -102,113 +237,20 @@ app.post('/enterOtp', (req, res) => {
         email: req.body.email,
         packages: []
     }
-    // url = 'https://api.txtlocal.com/send?';
-    // params = `apiKey=NzU3NTc5NDY0MzcwMzQ3MjM4NDg0NTM4NjI2YTZlNWE=&numbers=${userTemp.code+userTemp.mob}&message=otp is ${otp}&test=true`;
-    // message = `Otp is ${otp}`;
-    // options = {
-    //     method: "POST",
-    //     apiKey: "NzU3NTc5NDY0MzcwMzQ3MjM4NDg0NTM4NjI2YTZlNWE="
-    // }
-    // let request = https.request(url, (resp)=> {
-    //     resp.on('data', (data)=> {
-    //         console.log(JSON.parse(data));
-    //     })
-    //     // console.log(resp);
-    // });
-    // request.end();
-    const otp = Math.floor(Math.random() * 10000);
+    otp = Math.floor(Math.random() * 10000);
     const mail = {
         from: 'rg2792002@gmail.com',
         to: userTemp.email,
         subject: 'OTP',
-        text: otp.toString()
+        text: `The OTP to Sign Up to Travellers Quest is ${otp.toString()}`
     }
     transporter.sendMail(mail, (err, info) => {
         if (err) console.log(err);
-        else console.log('OTP sent:' + info.repsonse);
+        else console.log('OTP sent');
     });
     console.log(otp);
     res.render('otp');
 });
 
-app.post('/destination/:destinationName', (req, res) => {
-    Destination.findOne({ name: req.params.destinationName }, (err, destination) => {
-        if (err) res.render('invalid', { error: 'Destination not found' });
-        else {
-            Package.find({ destination: destination.name }, (err, packages) => {
-                res.render('destination', { userId: req.body.userId, destination: destination, packages: packages });
-            });
-        }
-    })
-});
 
-app.get('/packageSearch', (req, res) => {
-    const level = req.query.level;
-    Package.find({ level: level }, (err, packages) => {
-        console.log(packages);
-        console.log(level);
-        res.render('search', { level: req.query.level, userId: req.query.userId, packages: packages });
-        // res.redirect('/index/' + req.query.userId);
-    });
-});
-
-app.post('/buy', (req, res) => {
-    Package.findOne({ _id: req.body.packageId }, (err, package) => {
-        if (err) console.log(err);
-        console.log(package);
-        const transaction = new Transaction({
-            userId: req.body.userId,
-            package: package,
-            cost: req.body.cost
-        });
-        console.log(transaction);
-        transaction.save((err, tran) => {
-            if (err) console.log(err);
-            else {
-                console.log(tran);
-                const pkg = {
-                    packageId: package._id,
-                    transactionId: tran._id
-                }
-                User.findOneAndUpdate({_id: tran.userId}, {$push:{ packages:pkg}}, (err, doc)=> {
-                    if (err) console.log(err);
-                    else {
-                        res.redirect('/index/' + tran.userId);
-                        console.log(doc);
-                    }
-                });
-            }
-        })
-    });
-});
-
-app.get('/random', (req, res)=> {
-    User.find({_id: req.query.userId}, (err, user)=> {
-        Package.find({}, (err, packages)=> {
-            if(err) console.log(err);
-            else  {
-                packages = JSON.stringify(packages);
-                res.render('random', {userId: req.query.userId, packages: packages});
-            }
-        });
-    });
-});
-
-app.get('/search', (req, res)=> {
-    console.log(req.query);
-    Package.find({destination: req.query.destination}, (err, packages)=> {
-        if(err) console.log(err)
-        else {
-            packages = packages.toJSON();
-            console.log(packages);
-            res.render('search', {level: "Available", packages: packages, userId: req.query.userId});
-        }
-    });
-    // res.redirect(`../index/${req.query.userId}`);
-});
-
-app.listen(3000, () => {
-    console.log('3000');
-});
-
-// AIzaSyAA_A9qHIwbSXo8RLMpg3s7kXL664nmEfc
+app.listen(3000 || process.env.port, () => { });

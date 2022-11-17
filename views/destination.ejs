@@ -17,28 +17,32 @@
     %>
     <h1><%= destination.name %></h1>
     <br>
-    <h3>Description:</h3>
-    <p><%= destination.description %> </p>
-    <div class="container text-center px-4">
+    <img class="dest-img" src="../images/<%= destination.image %>" alt="">
+
+    <p class="description my-2 w-75 m-auto"><%= destination.description %> </p>
+    <div class="container text-center ">
         <div class="row gx-5 gy-8">
             <h3 class="col-12">Packages Available</h3>
             <% packages.forEach((package)=> { %>
-                <div class="info-card bg-light p-3 col-12">
+                <% package = package.toObject(); %>
+                <div class="info-card bg-light col-3">
                     <div class="card-head">
                         <h4><%= package.level %></h4>
                     </div>
                     <div class="card-body">
-                        <h5>From: <%= date(package.from) %></h5> 
-                       <h5>To: <%= date(package.to) %></h5> 
+                        <img class="card-img" src="../images/<%= package.hotelImage %>" alt=""><br>
+                        <!-- <h5>From: <%= date(package.from) %></h5> 
+                       <h5>To: <%= date(package.to) %></h5>  -->
                        <h5>Type: <%= package.level %></h5> 
                        <h5>Cost[Per Person]: <%= package.cost %></h5> 
                        <h5>Discount: <%= package.discount * 100 %>%</h5> 
                     </div>
                     <div class="card-foot">
-                        <form action="/buy" method="post">
+                        <form action="/package/<%= package._id %>">
                             <button class="btn btn-outline-dark my-3" name="packageId" value="<%= package._id %>">Buy</button>
                             <input type="hidden" name="userId" value="<%= userId %>">
                             <input type="hidden" name="cost" value="<%= package.cost %>">
+                            <input type="hidden" name="dicount" value="<%= package.discount %>">
                         </form>
                     </div>
                 </div>

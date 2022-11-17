@@ -11,6 +11,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa"
         crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="../css/styles.css">
 </head>
 
 <%- include('partials/navbar'); %>
@@ -21,33 +22,43 @@
     }
 %>
 <main>
-    <div class="container text-center px-4">
-        <div class="row gx-5 gy-5">
-            <h3 class="p-3 col-12"><%= level %> Packages</h3>
-            <% packages.forEach((package)=> { %>
-                <div class="info-card bg-light p-3 col-12">
-                    <div class="card-head">
-                        <h4><%= package.destination %></h4>
+    <% if(level == "Not Available") { %> 
+        <h3 class="p-3 col-12"><%= level %> Packages</h3>
+        <a href="./index/<%= userId %>"><button class="btn btn-dark">Return to Home Page</button></a>
+    <% } else { %>
+        <div class="container text-center px-4">
+            <div class="row gx-5 gy-5">
+                <h3 class="p-3 col-12"><%= level %> Packages</h3>
+                <% packages.forEach((package)=> { %>
+                    <% package = package.toObject(); %>
+                    <div class="info-card bg-light col-3">
+                        <div class="card-head">
+                            <h4><%= package.destination %>: <%= package.level %></h4>
+                        </div>
+                        <div class="card-body">
+                            <img class="card-img" src="../images/<%= package.hotelImage %>" alt=""><br>
+                            <!-- <h5>From: <%= date(package.from) %></h5> 
+                           <h5>To: <%= date(package.to) %></h5>  -->
+                           <h5>Type: <%= package.level %></h5> 
+                           <h5>Cost[Per Person]: <%= package.cost %></h5> 
+                           <h5>Discount: <%= package.discount * 100 %>%</h5> 
+                        </div>
+                        <div class="card-foot">
+                            <form action="/package/<%= package._id %>">
+                                <button class="btn btn-outline-dark my-3" name="packageId" value="<%= package._id %>">Buy</button>
+                                <input type="hidden" name="userId" value="<%= userId %>">
+                                <input type="hidden" name="cost" value="<%= package.cost %>">
+                                <input type="hidden" name="dicount" value="<%= package.discount %>">
+                                <input type="hidden" name="from" value="<%= from %>">
+                                <input type="hidden" name="to" value="<%= to %>">
+                            </form>
+                        </div>
                     </div>
-                    <div class="card-body">
-                       <h5>From: <%= date(package.from) %></h5> 
-                       <h5>To: <%= date(package.to) %></h5> 
-                       <h5>Type: <%= package.level %></h5> 
-                       <h5>Cost[Per Person]: <%= package.cost %></h5> 
-                       <h5>Discount: <%= package.discount * 100 %>%</h5> 
-                    </div>
-                    <div class="card-foot">
-                        <form action="/buy" method="post">
-                            <button class="btn btn-outline-dark my-3" name="packageId" value="<%= package._id %>">Buy</button>
-                            <input type="hidden" name="userId" value="<%= userId %>">
-                            <input type="hidden" name="cost" value="<%= package.cost %>">
-                        </form>
-                    </div>
-                </div>
-            <% }) %>    
-
+                <% }) %>    
+    
+            </div>
         </div>
-    </div>
+    <% } %>
 </main>
 </body>
 </html>

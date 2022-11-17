@@ -1,0 +1,136 @@
+<html>
+
+    <head>
+        <link rel="icon" type="image/x-icon" href="assets/favicon_io/android-chrome-192x192.png" />
+    </head>
+    <link rel="stylesheet" href="./css/payment.css">
+    </head>
+    <body>
+
+    <div class='container'>
+        <div class='window'>
+            <div class='order-info'>
+                <div class='order-info-content'>
+                    <h2>Order Summary</h2>
+                    <div class='line'></div>
+                        <table class='order-table'>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <div class='thin'>
+                                            <% console.log("Package ID: ");console.log(package[0]._id) %>
+                                            <%= package[0].destination %> <%= package[0].level %> Package 
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+    
+                        </table>
+                        <div class='line'></div>
+                            <h3 class="thin" style="color: #4488dd;">Price:: ₹<%=cost%>
+                            <h3 class="thin" style="color: #4488dd;">GST:: ₹<%=tax%>
+                            </h3>
+                            <h3 class="thin" style="color: #4488dd;">Total Price: ₹<%=totalPrice%>
+                            </h3>
+    
+                </div>
+            </div>
+            <div class='credit-info'>
+                <div class='credit-info-content'>
+                    <table class='half-input-table'>
+                        <tr>
+                            <td>Please select your card: </td>
+                            <td>
+                                <div class='dropdown' id='card-dropdown'>
+                                    <div class='dropdown-btn' id='current-card'>Visa</div>
+                                    <div class='dropdown-select'>
+                                        <ul>
+                                            <li>Master Card</li>
+                                            <li>American Express</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                    <img src='https://dl.dropboxusercontent.com/s/ubamyu6mzov5c80/visa_logo%20%281%29.png' height='80'
+                        class='credit-card-image' id='credit-card-image'></img>
+                    Card Number
+                    <input class='input-field'></input>
+                    Card Holder
+                    <input class='input-field'></input>
+                    <table class='half-input-table'>
+                        <tr>
+                            <td> Expires
+                                <input class='input-field' placeholder="XX/YY"></input>
+                            </td>
+                            <td>CVV
+                                <input class='input-field' type="password"></input>
+                            </td>
+                        </tr>
+                    </table>
+    
+                    <form action="/buy" method="post">
+                        <input type="hidden" name="userId" value="<%= userId %>">
+                        <input type="hidden" name="packageId" value="<%= package[0]._id %>">
+                        <input type="hidden" name="cost" value="<%= totalPrice %>">
+                        <input type="hidden" name="from" value="<%= from %>">
+                        <input type="hidden" name="to" value="<%= to %>">
+                        <button class='pay-btn'>Checkout</button> 
+                    </form>
+    
+    
+                </div>
+    
+            </div>
+        </div>
+    </div>
+    <script>
+        var cardDrop = document.getElementById('card-dropdown');
+        var activeDropdown;
+        cardDrop.addEventListener('click', function () {
+            var node;
+            for (var i = 0; i < this.childNodes.length - 1; i++)
+                node = this.childNodes[i];
+            if (node.className === 'dropdown-select') {
+                node.classList.add('visible');
+                activeDropdown = node;
+            };
+        })
+    
+        window.onclick = function (e) {
+            console.log(e.target.tagName)
+            console.log('dropdown');
+            console.log(activeDropdown)
+            if (e.target.tagName === 'LI' && activeDropdown) {
+                if (e.target.innerHTML === 'Master Card') {
+                    document.getElementById('credit-card-image').src = 'https://dl.dropboxusercontent.com/s/2vbqk5lcpi7hjoc/MasterCard_Logo.svg.png';
+                    activeDropdown.classList.remove('visible');
+                    activeDropdown = null;
+                    e.target.innerHTML = document.getElementById('current-card').innerHTML;
+                    document.getElementById('current-card').innerHTML = 'Master Card';
+                }
+                else if (e.target.innerHTML === 'American Express') {
+                    document.getElementById('credit-card-image').src = 'https://dl.dropboxusercontent.com/s/f5hyn6u05ktql8d/amex-icon-6902.png';
+                    activeDropdown.classList.remove('visible');
+                    activeDropdown = null;
+                    e.target.innerHTML = document.getElementById('current-card').innerHTML;
+                    document.getElementById('current-card').innerHTML = 'American Express';
+                }
+                else if (e.target.innerHTML === 'Visa') {
+                    document.getElementById('credit-card-image').src = 'https://dl.dropboxusercontent.com/s/ubamyu6mzov5c80/visa_logo%20%281%29.png';
+                    activeDropdown.classList.remove('visible');
+                    activeDropdown = null;
+                    e.target.innerHTML = document.getElementById('current-card').innerHTML;
+                    document.getElementById('current-card').innerHTML = 'Visa';
+                }
+            }
+            else if (e.target.className !== 'dropdown-btn' && activeDropdown) {
+                activeDropdown.classList.remove('visible');
+                activeDropdown = null;
+            }
+        }
+    
+    </script>
+    </body>
+</html>

@@ -1,15 +1,82 @@
 body {
     font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    text-align: center;
+    background-color: #e5e5f7;
+    padding-bottom: 30px;
+opacity: 0.8;
+background-image:  repeating-radial-gradient( circle at 0 0, transparent 0, #e5e5f7 15px ), repeating-linear-gradient( #dab50d55, #dab50d );
 }
 
 .info-card {
     margin: 3%;
+    border-radius: 10px;
+    border: 1px solid black;
+    padding: 10px;
+    /* max-height: 20%; */
+}
+
+
+/* .main {
+    margin-left: 0;
+    margin-right: 0;
+    width: 100%;
+    max-width: 100%;
+} */
+.hero {
+    height: 500px;
+    background-image: url("../images/hero.jpg");
+    background-size: cover;
+    vertical-align: auto;
+    margin-top: 0;
+    color: black;
+}
+
+.place-img {
+    max-width: 400px;
+    max-height: 300px;
+    border-radius: 25%;
+    border: 5px black double;
+}
+
+.hotelName {
+    display: inline-block;
+}
+
+.hotel-img {
+    max-width: 500px;
+    max-height: 400px;
+    margin: 2%;
+    border-radius: 25%;
+    border: 5px black double;
+}
+
+.description {
+    font-style: italic;
+}
+
+.dest-img {
+    width: 400px;
+    height: 300px;
+    border: double 5px black;
+    border-radius: 10%;
+}
+
+.card-img {
+    max-width: 400px;
+    max-height: 200px;
+    border-radius: 10%;
+    margin-bottom: 2.5%;
+
+}
+
+.card-img-top {
+    border-radius: 5%;
 }
 
 #map {
-    height: 30%;
-    width: 70%;
-    margin: auto;
+    height: 400px;
+    width: 100%;
+    margin: 20px auto;
 }
 
 text{
@@ -20,9 +87,10 @@ text{
 #chart{
     width:500px;
     height:500px;
+    margin: 10px;
 }
 #question{
-    display: block;
+    display: inline-block;
     width:400px;
     height:500px;
     clear: both;
@@ -32,9 +100,9 @@ text{
 #question h1{
     font-size: 50px;
     font-weight: bold;
-    clear: both;
-    position: relative;
-    bottom:0;
-    -webkit-transform:translate(0,-50%);
-            transform:translate(0,-50%);
+    clear: left;
+    /* position: relative;
+    bottom:0; */
+    /* -webkit-transform:translate(0,-50%);
+            transform:translate(0,-50%); */
 }

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Random</title>
     <%- include('partials/bootstrap'); %> 
     <link rel="stylesheet" type="text/css" href="./css/styles.css">
     <script>
@@ -17,18 +17,38 @@
         let a = 0;
         let data=[];
         Data.forEach((package)=> {
-            let card = `<div class="info-card bg-light p-3 col-12"><div class="card-head"><h4> ${package.destination} </h4></div><div class="card-body"><h5>From: ${date(package.from)}</h5><h5>To: ${date(package.to)}</h5><h5>Type: ${package.level}</h5><h5>Cost[Per Person]: ${package.cost*0.5}</h5></div><div class="card-foot"><form action="/buy" method="post"><button class="btn btn-outline-dark my-3" name="packageId" value="${package._id}">Buy</button><input type="hidden" name="userId" value="<%- userId %>"><input type="hidden" name="cost" value="${package.cost*0.5}"></form></div></div>`;
+            let card = `<div class="info-card bg-light py-3 mx-3 my-2"><div class="card-head"><h4> ${package.destination} </h4></div><div class="card-body"><h5>From: ${date(package.from)}</h5><h5>To: ${date(package.to)}</h5><h5>Type: ${package.level}</h5><h5>Cost[Per Person]: ${package.cost*0.5}</h5></div><div class="card-foot"><form action="/package/${package._id}"><button class="btn btn-outline-dark my-3" name="packageId" value="${package._id}">Buy</button><input type="hidden" name="userId" value="<%- userId %>"><input type="hidden" name="cost" value="${package.cost*0.5}"></form></div></div>`;
+            card = `<div class="info-card bg-light w-100">
+                    <div class="card-head">
+                        <h4>${package.destination}</h4>
+                        <h5>${package.level}</h5>
+                    </div>
+                    <div class="card-body">
+                        <img class="card-img" src="../images/${package.hotelImage}" alt=""><br>
+                       <h5>Type: ${package.level}</h5> 
+                       <h5>Cost[Per Person]: ${package.cost*0.7}</h5> 
+                       <h5>Discount: <s>${package.discount * 100 }%</s></h5><h5>${package.discount*150}%</h5> 
+                    </div>
+                    <div class="card-foot">
+                        <form action='/package/${package._id}'>
+                            <button class='btn btn-outline-dark my-3' name="packageId" value="${package._id}">Buy</button>
+                            <input type="hidden" name="userId" value="<%- userId %>">
+                            <input type="hidden" name="cost" value="${package.cost*0.70}">
+                            <input type="hidden" name="dicount" value="${package.discount}">
+                        </form>
+                    </div>
+                </div>`
             a++;
             if(Math.random() > 0.4) {
                 data.push({
-                    label: package.destination,
+                    label: `${package.destination}: ${package.level}`,
                     card: card,
                     value: a
                 });
             } else {
                 data.push({
                     label: "Try Again",
-                    card: "<h2>Better Luck Tomorrow<h2>",
+                    card: "<h2 class='my-4'>Better Luck Next Time<h2>",
                     value: a
                 });
             }
@@ -37,14 +57,24 @@
 </head>
 <body>
     <%- include('partials/navbar'); %>
-    <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
-    <div class="container my-5 mx-5">
-        <div id="chart" class="mx-auto"></div>
-        <br>
+    <script src="./js/d3.js" charset="utf-8"></script>
+    <h1>Spin to Win</h1>
+    <div class=" my-5 mx-5 p-5">
+        <table>
+            <tr class="w-100">
+                <td class="w-75">
+                    <div id="question">
+                    </div>
+                </td>
+                <td>
+
+                </td>
+                <td>
+                    <div id="chart" class=""></div>
+                </td>
+            </tr>
+        </table>
         <script src="./js/random.js"></script>
-    </div>
-    <div id="question">
-        <h1></h1>
     </div>
 </body>
 </html>
