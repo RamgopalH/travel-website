@@ -4,7 +4,7 @@
 - Download mongo db and run on port 27017
 - clone the directory using the *git clone <directory link>* command
 - in the cloned directory, run command *npm install -y* 
-- create .env file in the cloned directory and place a variable **API_KEY=<your google maps api key here>** in the .env file
+- create .env file in the cloned directory and place a variable **API_KEY= *your google maps api key here***in the .env file
 - run *nodemon .*
 - go to <http//localhost:3000>
 - Signup and login to view webpage
